@@ -285,4 +285,26 @@ ShuffleOut(pieces, len, data, errPrefix, path, status)
 	Quit
 }
 
+/// Description
+ClassMethod InstallJsonPatchPython() As %Status
+{
+	Set sc = $$$OK
+	
+	set sc = ##class(%SYS.Python).Install("jsonpatch")
+
+	Return sc
+}
+
+/// Description
+ClassMethod PatchPython(pResourceObj As %Library.DynamicObject, tPatchObj As %Library.DynamicObject) As %Library.DynamicObject [ Language = python ]
+{
+	import json
+	import jsonpatch
+
+	patch = json.loads(tPatchObj._ToJSON())
+	obj = json.loads(pResourceObj._ToJSON())
+	res = jsonpatch.apply_patch(obj, patch)
+	return pResourceObj._FromJSON(json.dumps(res))
+}
+
 }
